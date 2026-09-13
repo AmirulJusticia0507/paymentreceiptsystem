@@ -8,6 +8,7 @@ import Products from './pages/Products.tsx'
 import Sales from './pages/Sales.tsx'
 import Payments from './pages/Payments.tsx'
 import Expenses from './pages/Expenses.tsx'
+import Reports from './pages/Reports.tsx'
 
 export default function App() {
   const { isAuthenticated } = useAuth()
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/sales" element={<Sales />} />
         <Route path="/payments" element={<Payments />} />
         <Route path="/expenses" element={<Expenses />} />
+        <Route path="/reports" element={<Reports />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

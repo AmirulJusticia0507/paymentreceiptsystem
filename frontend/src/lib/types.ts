@@ -8,6 +8,7 @@ export interface Product {
 export interface SaleItem {
   id: number
   product: number | null
+  product_name?: string
   quantity: number
   unit_price: string
   subtotal: string
@@ -49,6 +50,26 @@ export interface Expense {
   amount: string
   category: ExpenseCategory
   created_at: string
+}
+
+export interface SaleMini {
+  id: number
+  receipt_number: string
+  customer_name: string
+  created_at: string
+  items: SaleItem[]
+}
+
+export interface Laporan {
+  id: number
+  user_name: string
+  nik: string
+  sale: number
+  sale_data: SaleMini
+  status: string
+  total: string
+  created_at: string
+  approved_at: string | null
 }
 
 export interface ReportSummary {

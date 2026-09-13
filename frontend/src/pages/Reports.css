@@ -1,0 +1,170 @@
+.laporan-letter {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm;
+  background: #fff;
+  box-sizing: border-box;
+  font-family: 'Times New Roman', Georgia, serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #1f2937;
+}
+
+.letter-header {
+  border-bottom: 3px double #1e3a5f;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.kop-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kop-badge {
+  font-size: 36px;
+}
+
+.kop-nama {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1e3a5f;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.kop-alamat {
+  font-size: 12px;
+  color: #4b5563;
+  margin: 2px 0 0 0;
+}
+
+.letter-title-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.letter-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #1e3a5f;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.letter-subtitle {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 4px 0 0 0;
+}
+
+.letter-meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px 24px;
+  margin-bottom: 16px;
+}
+
+.meta-row {
+  display: flex;
+  gap: 8px;
+}
+
+.meta-label {
+  font-weight: bold;
+  width: 72px;
+  flex-shrink: 0;
+}
+
+.meta-value {
+  flex: 1;
+}
+
+.letter-divider {
+  height: 2px;
+  background: #1e3a5f;
+  margin-bottom: 16px;
+}
+
+.letter-body {
+  margin-bottom: 14px;
+}
+
+.letter-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+.letter-table th {
+  border: 1px solid #1e3a5f;
+  background: #f3f4f6;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.letter-table td {
+  border: 1px solid #d1d5db;
+  padding: 6px 8px;
+}
+
+.letter-table tfoot td {
+  border-top: 2px solid #1e3a5f;
+}
+
+.letter-total-row td {
+  background: #f9fafb;
+}
+
+.signature-section {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 60px;
+  gap: 20px;
+}
+
+.signature-col {
+  flex: 1;
+  text-align: center;
+}
+
+.signature-line {
+  border-bottom: 1px solid #1e3a5f;
+  height: 50px;
+  margin-bottom: 6px;
+}
+
+.signature-label {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 0 0 2px 0;
+}
+
+.signature-name {
+  font-weight: bold;
+  font-size: 13px;
+  margin: 0;
+}
+
+.letter-footer {
+  border-top: 1px solid #d1d5db;
+  padding-top: 12px;
+  margin-top: 40px;
+  text-align: center;
+}
+
+.letter-footer p {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+@media print {
+  .laporan-letter {
+    padding: 0;
+    width: 100%;
+    min-height: auto;
+  }
+}
