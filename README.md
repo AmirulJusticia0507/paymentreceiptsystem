@@ -12,13 +12,13 @@ Sistem pencatatan transaksi, pembayaran, dan laporan berbasis REST API menggunak
 
 ## Tech Stack
 
-| Komponen | Teknologi |
-|---|---|
-| Backend | Django 5.1.7, Django REST Framework 3.15 |
-| Auth | djangorestframework-simplejwt (JWT) |
-| Database | MySQL (Laragon) |
-| Config | python-decouple (`.env`) |
-| Frontend | *(lihat folder `frontend/`)* |
+| Komponen | Teknologi                                |
+| -------- | ---------------------------------------- |
+| Backend  | Django 5.1.7, Django REST Framework 3.15 |
+| Auth     | djangorestframework-simplejwt (JWT)      |
+| Database | MySQL (Laragon)                          |
+| Config   | python-decouple (`.env`)               |
+| Frontend | *(lihat folder `frontend/`)*         |
 
 ## Struktur Project
 
@@ -95,18 +95,18 @@ Response berisi `access` dan `refresh` token. Gunakan `POST /api/token/refresh/`
 
 ## Endpoint API
 
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| POST | `/api/token/` | Login JWT |
-| POST | `/api/token/refresh/` | Refresh JWT |
-| CRUD | `/api/inventory/products/` | Manajemen produk |
-| CRUD | `/api/sales/sales/` | Penjualan (nested items) |
-| CRUD | `/api/sales/items/` | Item penjualan |
-| CRUD | `/api/finance/payments/` | Pembayaran |
-| CRUD | `/api/finance/expenses/` | Pengeluaran |
-| GET | `/api/reports/summary/` | Ringkasan (total penjualan, pendapatan, laba) |
-| GET | `/api/reports/sales-per-day/?days=7` | Tren penjualan per hari |
-| GET | `/api/reports/revenue-per-day/?days=7` | Tren pendapatan per hari |
+| Method | Endpoint                                 | Deskripsi                                     |
+| ------ | ---------------------------------------- | --------------------------------------------- |
+| POST   | `/api/token/`                          | Login JWT                                     |
+| POST   | `/api/token/refresh/`                  | Refresh JWT                                   |
+| CRUD   | `/api/inventory/products/`             | Manajemen produk                              |
+| CRUD   | `/api/sales/sales/`                    | Penjualan (nested items)                      |
+| CRUD   | `/api/sales/items/`                    | Item penjualan                                |
+| CRUD   | `/api/finance/payments/`               | Pembayaran                                    |
+| CRUD   | `/api/finance/expenses/`               | Pengeluaran                                   |
+| GET    | `/api/reports/summary/`                | Ringkasan (total penjualan, pendapatan, laba) |
+| GET    | `/api/reports/sales-per-day/?days=7`   | Tren penjualan per hari                       |
+| GET    | `/api/reports/revenue-per-day/?days=7` | Tren pendapatan per hari                      |
 
 Admin Django tersedia di `/admin/`.
 
