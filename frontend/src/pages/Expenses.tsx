@@ -23,10 +23,10 @@ const CATEGORY_OPTIONS: ExpenseCategory[] = ['OPERATIONAL', 'PURCHASE', 'UTILITY
 interface ExpenseFormData {
   description: string
   amount: string
-  category: ExpenseCategory
+  category: ExpenseCategory | ''
 }
 
-const emptyForm = (): ExpenseFormData => ({ description: '', amount: '', category: 'OPERATIONAL' })
+const emptyForm = (): ExpenseFormData => ({ description: '', amount: '', category: '' })
 
 export default function Expenses() {
   const { data, error, loading, reload } = useFetch<Expense[]>('/api/finance/expenses/')
@@ -36,11 +36,14 @@ export default function Expenses() {
   const [form, setForm] = useState<ExpenseFormData>(emptyForm())
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiSuggestion, setAiSuggestion] = useState<string | null>(null)
 
   function openCreate() {
     setEditing(null)
     setForm(emptyForm())
     setFormError(null)
+    setAiSuggestion(null)
     setModalOpen(true)
   }
 
@@ -48,7 +51,27 @@ export default function Expenses() {
     setEditing(expense)
     setForm({ description: expense.description, amount: expense.amount, category: expense.category })
     setFormError(null)
+    setAiSuggestion(null)
     setModalOpen(true)
+  }
+
+  async function handleClassify() {
+    if (!form.description.trim() || aiLoading) return
+    setAiLoading(true)
+    setFormError(null)
+    setAiSuggestion(null)
+    try {
+      const res = await api.post<{ category: ExpenseCategory; reason: string }>('/api/ai/categorize-expense/', {
+        description: form.description,
+        amount: form.amount,
+      })
+      setForm((f) => ({ ...f, category: res.data.category }))
+      setAiSuggestion(res.data.reason ? `Saran AI: ${res.data.category} — ${res.data.reason}` : `Saran AI: ${res.data.category}`)
+    } catch {
+      setFormError('Gagal klasifikasi AI.')
+    } finally {
+      setAiLoading(false)
+    }
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -139,14 +162,36 @@ export default function Expenses() {
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">Kategori</label>
-              <Select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as ExpenseCategory })}>
+              <div className="mb-1 flex items-center justify-between">
+                <label className="block text-sm font-medium text-slate-700">Kategori</label>
+                <button
+                  type="button"
+                  onClick={handleClassify}
+                  disabled={aiLoading || !form.description.trim()}
+                  className="text-xs font-medium text-indigo-600 hover:text-indigo-800 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {aiLoading ? 'Menganalisis…' : '✨ Klasifikasi dengan AI'}
+                </button>
+              </div>
+              {aiLoading && (
+                <div className="mb-2 flex items-center gap-2 text-xs text-slate-500">
+                  <span className="inline-flex gap-1">
+                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400" />
+                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:0.15s]" />
+                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:0.3s]" />
+                  </span>
+                  AI membaca deskripsi…
+                </div>
+              )}
+              <Select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as ExpenseCategory | '' })}>
+                <option value="">Auto (AI)</option>
                 {CATEGORY_OPTIONS.map((c) => (
                   <option key={c} value={c}>
                     {c}
                   </option>
                 ))}
               </Select>
+              {aiSuggestion && <p className="mt-1 text-xs text-indigo-600">{aiSuggestion}</p>}
             </div>
             {formError && <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{formError}</p>}
             <div className="flex justify-end gap-2 pt-2">

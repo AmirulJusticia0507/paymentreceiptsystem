@@ -37,7 +37,7 @@ class LaporanSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Laporan
-        fields = ['id', 'user_name', 'nik', 'sale', 'sale_data', 'status', 'total', 'created_at', 'approved_at']
+        fields = ['id', 'user_name', 'nik', 'sale', 'sale_data', 'status', 'total', 'ai_summary', 'created_at', 'approved_at']
         read_only_fields = ['id', 'status', 'created_at', 'approved_at', 'total']
 
     def get_total(self, obj: Laporan) -> Decimal:

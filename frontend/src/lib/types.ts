@@ -3,6 +3,7 @@ export interface Product {
   name: string
   stock: number
   price: string
+  description: string
 }
 
 export interface SaleItem {
@@ -68,6 +69,7 @@ export interface Laporan {
   sale_data: SaleMini
   status: string
   total: string
+  ai_summary: string
   created_at: string
   approved_at: string | null
 }

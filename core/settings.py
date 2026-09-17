@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'sales',
     'finance',
     'reports',
+    'ai',
 ]
 
 MIDDLEWARE = [
@@ -144,3 +145,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# --- OmniRoute AI Gateway (OpenAI-compatible) ---
+OMNIROUTE_BASE_URL = config('OMNIROUTE_BASE_URL', default='http://localhost:20128/v1')
+OMNIROUTE_API_KEY = config('OMNIROUTE_API_KEY', default='')
+OMNIROUTE_MODEL = config('OMNIROUTE_MODEL', default='cfp/zai-org/glm-5.2')
+OMNIROUTE_FALLBACK_MODELS = config(
+    'OMNIROUTE_FALLBACK_MODELS',
+    default='cfp/google/gemma-4-26b-a4b-it,cfp/deepseek-ai/deepseek-v4-flash-0731,cfp/openai/gpt-oss-120b',
+)
+AI_TIMEOUT_SECONDS = config('AI_TIMEOUT_SECONDS', default=30, cast=int)

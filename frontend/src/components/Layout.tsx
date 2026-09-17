@@ -58,6 +58,14 @@ function FileIcon() {
   )
 }
 
+function SparkIcon() {
+  return (
+    <svg className={iconClass} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+    </svg>
+  )
+}
+
 const NAV_ITEMS: NavItem[] = [
   { to: '/', label: 'Dashboard', icon: <DashboardIcon /> },
   { to: '/products', label: 'Produk', icon: <BoxIcon /> },
@@ -65,6 +73,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/payments', label: 'Pembayaran', icon: <CardIcon /> },
   { to: '/expenses', label: 'Pengeluaran', icon: <WalletIcon /> },
   { to: '/reports', label: 'Laporan', icon: <FileIcon /> },
+  { to: '/ai', label: 'Asisten AI', icon: <SparkIcon /> },
 ]
 
 export default function Layout() {

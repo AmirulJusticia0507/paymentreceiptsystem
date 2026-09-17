@@ -15,6 +15,7 @@ class Laporan(models.Model):
     nik = models.CharField(max_length=20)
     sale = models.ForeignKey(Sale, related_name='laporans', on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.DRAFT)
+    ai_summary = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     approved_at = models.DateTimeField(null=True, blank=True)
 

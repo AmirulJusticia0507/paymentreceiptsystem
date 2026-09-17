@@ -8,6 +8,7 @@ Sistem pencatatan transaksi, pembayaran, dan laporan berbasis REST API menggunak
 - **Sales** — pencatatan penjualan & item-nya (nomor resi otomatis `RC-xxxxxx`)
 - **Finance** — pembayaran (Cash / Transfer / Card / QRIS) dan pengeluaran (Expense)
 - **Reports** — ringkasan transaksi, tren penjualan & pendapatan per hari
+- **AI (OmniRoute)** — chatbot tanya data bisnis, ringkasan laporan otomatis, klasifikasi kategori pengeluaran, dan generate deskripsi produk
 - **Autentikasi** — JWT (SimpleJWT) pada seluruh endpoint API
 
 ## Tech Stack
@@ -18,6 +19,7 @@ Sistem pencatatan transaksi, pembayaran, dan laporan berbasis REST API menggunak
 | Auth     | djangorestframework-simplejwt (JWT)      |
 | Database | MySQL (Laragon)                          |
 | Config   | python-decouple (`.env`)               |
+| AI       | OmniRoute gateway (OpenAI-compatible, `ai/`) |
 | Frontend | *(lihat folder `frontend/`)*         |
 
 ## Struktur Project
@@ -107,6 +109,25 @@ Response berisi `access` dan `refresh` token. Gunakan `POST /api/token/refresh/`
 | GET    | `/api/reports/summary/`                | Ringkasan (total penjualan, pendapatan, laba) |
 | GET    | `/api/reports/sales-per-day/?days=7`   | Tren penjualan per hari                       |
 | GET    | `/api/reports/revenue-per-day/?days=7` | Tren pendapatan per hari                      |
+| POST   | `/api/ai/chat/`                        | Chatbot tanya data bisnis (`{message}`)       |
+| POST   | `/api/ai/summarize-report/`            | Ringkasan narasi AI (`{laporan_id?, days?, save?}`) |
+| POST   | `/api/ai/categorize-expense/`          | Klasifikasi kategori pengeluaran (`{description, amount?}`) |
+| POST   | `/api/ai/product-description/`         | Generate deskripsi produk (`{name, price?}`)  |
+
+## Konfigurasi AI (OmniRoute)
+
+Fitur AI memakai OmniRoute gateway OpenAI-compatible. Atur di `.env`:
+
+```ini
+OMNIROUTE_BASE_URL=http://localhost:20128/v1
+OMNIROUTE_API_KEY=sk-xxxx           # dari Dashboard OmniRoute
+OMNIROUTE_MODEL=cfp/zai-org/glm-5.2 # model utama (terbukti jalan)
+OMNIROUTE_FALLBACK_MODELS=cfp/google/gemma-4-26b-a4b-it,cfp/deepseek-ai/deepseek-v4-flash-0731
+AI_TIMEOUT_SECONDS=30
+```
+
+Bayangkan model cadangan dipakai otomatis bila model utama gagal. Semua endpoint AI
+membutuhkan token JWT yang sama seperti endpoint lain.
 
 Admin Django tersedia di `/admin/`.
 

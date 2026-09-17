@@ -8,6 +8,7 @@ import {
   Button,
   ButtonGhost,
   Input,
+  Textarea,
   Modal,
   Card,
   ErrorState,
@@ -19,9 +20,10 @@ interface ProductFormData {
   name: string
   stock: string
   price: string
+  description: string
 }
 
-const emptyForm = (): ProductFormData => ({ name: '', stock: '', price: '' })
+const emptyForm = (): ProductFormData => ({ name: '', stock: '', price: '', description: '' })
 
 export default function Products() {
   const { data, error, loading, reload } = useFetch<Product[]>('/api/inventory/products/')
@@ -31,6 +33,7 @@ export default function Products() {
   const [form, setForm] = useState<ProductFormData>(emptyForm())
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
 
   function openCreate() {
     setEditing(null)
@@ -41,9 +44,26 @@ export default function Products() {
 
   function openEdit(p: Product) {
     setEditing(p)
-    setForm({ name: p.name, stock: String(p.stock), price: p.price })
+    setForm({ name: p.name, stock: String(p.stock), price: p.price, description: p.description })
     setFormError(null)
     setModalOpen(true)
+  }
+
+  async function handleGenerateDescription() {
+    if (!form.name.trim() || aiLoading) return
+    setAiLoading(true)
+    setFormError(null)
+    try {
+      const res = await api.post<{ description: string }>('/api/ai/product-description/', {
+        name: form.name,
+        price: form.price,
+      })
+      setForm((f) => ({ ...f, description: res.data.description }))
+    } catch {
+      setFormError('Gagal generate deskripsi AI.')
+    } finally {
+      setAiLoading(false)
+    }
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -51,7 +71,7 @@ export default function Products() {
     setSaving(true)
     setFormError(null)
     try {
-      const payload = { name: form.name, stock: Number(form.stock), price: form.price }
+      const payload = { name: form.name, stock: Number(form.stock), price: form.price, description: form.description }
       if (editing) {
         await api.patch(`/api/inventory/products/${editing.id}/`, payload)
       } else {
@@ -96,7 +116,10 @@ export default function Products() {
             <Table headers={['Nama', 'Stok', 'Harga', 'Aksi']}>
               {data.map((p) => (
                 <tr key={p.id} className="hover:bg-slate-50">
-                  <Td className="font-medium">{p.name}</Td>
+                  <Td className="font-medium">
+                    {p.name}
+                    {p.description && <p className="mt-0.5 max-w-xs truncate text-xs font-normal text-slate-400">{p.description}</p>}
+                  </Td>
                   <Td>
                     <span className={p.stock <= 0 ? 'text-rose-600' : ''}>{p.stock}</span>
                   </Td>
@@ -142,6 +165,20 @@ export default function Products() {
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: e.target.value })}
                 required
+              />
+            </div>
+            <div>
+              <div className="mb-1 flex items-center justify-between">
+                <label className="block text-sm font-medium text-slate-700">Deskripsi</label>
+                <ButtonGhost type="button" disabled={aiLoading || !form.name.trim()} onClick={handleGenerateDescription}>
+                  {aiLoading ? 'Membuat…' : '✨ Buat dengan AI'}
+                </ButtonGhost>
+              </div>
+              <Textarea
+                rows={3}
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                placeholder="Deskripsi singkat produk…"
               />
             </div>
             {formError && <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{formError}</p>}

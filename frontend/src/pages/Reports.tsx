@@ -144,8 +144,29 @@ export default function Reports() {
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const [viewId, setViewId] = useState<number | null>(null)
+  const [summaryLoading, setSummaryLoading] = useState(false)
+  const [summaryError, setSummaryError] = useState<string | null>(null)
+  const [liveSummary, setLiveSummary] = useState<string | null>(null)
 
   const sales = salesFetch.data ?? []
+
+  async function handleGenerateSummary() {
+    if (!viewLaporan || summaryLoading) return
+    setSummaryLoading(true)
+    setSummaryError(null)
+    try {
+      const res = await api.post<{ summary: string; saved: boolean }>('/api/ai/summarize-report/', {
+        laporan_id: viewLaporan.id,
+        save: true,
+      })
+      setLiveSummary(res.data.summary)
+      reload()
+    } catch {
+      setSummaryError('Gagal generate ringkasan AI.')
+    } finally {
+      setSummaryLoading(false)
+    }
+  }
 
   function openCreate() {
     setSelectedSale('')
@@ -172,6 +193,7 @@ export default function Reports() {
       })
       setModalOpen(false)
       setViewId(res.data.id)
+      setLiveSummary(null)
       reload()
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch {
@@ -197,6 +219,34 @@ export default function Reports() {
             <ButtonGhost onClick={() => setViewId(null)}>Kembali ke daftar</ButtonGhost>
           </div>
           <LaporanLetter laporan={viewLaporan} />
+
+          {(liveSummary ?? viewLaporan.ai_summary) || summaryLoading || summaryError ? (
+            <section className="mt-6 rounded-xl border border-indigo-200 bg-indigo-50 p-5 print:hidden">
+              <div className="mb-2 flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-indigo-900">Ringkasan AI</h3>
+                {!summaryLoading && (
+                  <Button onClick={handleGenerateSummary}>
+                    {liveSummary || viewLaporan.ai_summary ? '↻ Buat Ulang' : '✨ Buat Ringkasan AI'}
+                  </Button>
+                )}
+              </div>
+              {summaryLoading ? (
+                <p className="text-sm text-indigo-600">AI menyusun ringkasan…</p>
+              ) : summaryError ? (
+                <p className="text-sm text-rose-600">{summaryError}</p>
+              ) : (
+                <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
+                  {liveSummary ?? viewLaporan.ai_summary}
+                </p>
+              )}
+            </section>
+          ) : (
+            <div className="mt-6 flex justify-end print:hidden">
+              <Button onClick={handleGenerateSummary} disabled={summaryLoading}>
+                {summaryLoading ? 'Menyusun…' : '✨ Buat Ringkasan AI'}
+              </Button>
+            </div>
+          )}
         </div>
       )}
 
@@ -224,7 +274,7 @@ export default function Reports() {
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {data.map((l) => (
-                    <tr key={l.id} className="hover:bg-slate-50 cursor-pointer" onClick={() => setViewId(l.id)}>
+                    <tr key={l.id} className="hover:bg-slate-50 cursor-pointer" onClick={() => { setViewId(l.id); setLiveSummary(null) }}>
                       <td className="px-3 py-3 font-medium">#{l.id}</td>
                       <td className="px-3 py-3">{l.user_name}</td>
                       <td className="px-3 py-3">{l.nik}</td>
