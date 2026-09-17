@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 from decouple import config
 
@@ -155,4 +156,4 @@ OMNIROUTE_FALLBACK_MODELS = config(
     'OMNIROUTE_FALLBACK_MODELS',
     default='cfp/google/gemma-4-26b-a4b-it,cfp/deepseek-ai/deepseek-v4-flash-0731,cfp/openai/gpt-oss-120b',
 )
-AI_TIMEOUT_SECONDS = config('AI_TIMEOUT_SECONDS', default=30, cast=int)
+AI_TIMEOUT_SECONDS = int(os.getenv('AI_TIMEOUT_SECONDS', '30'))
