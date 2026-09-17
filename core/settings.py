@@ -156,4 +156,4 @@ OMNIROUTE_FALLBACK_MODELS = config(
     'OMNIROUTE_FALLBACK_MODELS',
     default='cfp/google/gemma-4-26b-a4b-it,cfp/deepseek-ai/deepseek-v4-flash-0731,cfp/openai/gpt-oss-120b',
 )
-AI_TIMEOUT_SECONDS = int(os.getenv('AI_TIMEOUT_SECONDS', '30'))
+AI_TIMEOUT_SECONDS = int(os.getenv('AI_TIMEOUT_SECONDS') or '30')
