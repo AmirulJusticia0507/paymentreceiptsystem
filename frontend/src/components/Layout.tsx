@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import type { ReactElement } from 'react'
+import { useState, type ReactElement } from 'react'
 import { useAuth } from '../context/AuthContext.tsx'
 
 interface NavItem {
@@ -79,6 +79,7 @@ const NAV_ITEMS: NavItem[] = [
 export default function Layout() {
   const { logout } = useAuth()
   const navigate = useNavigate()
+  const [collapsed, setCollapsed] = useState(false)
 
   function handleLogout() {
     logout()
@@ -87,12 +88,32 @@ export default function Layout() {
 
   return (
     <div className="flex min-h-screen">
-      <aside className="fixed inset-y-0 left-0 z-30 flex w-60 flex-col bg-slate-900 text-slate-300">
-        <div className="flex items-center gap-2 border-b border-slate-800 px-5 py-4">
-          <span className="text-xl">🧾</span>
-          <div>
-            <p className="text-sm font-bold text-white">Payment Receipt</p>
-            <p className="text-xs text-slate-500">System</p>
+      <aside
+        className={`fixed inset-y-0 left-0 z-30 flex flex-col bg-slate-900 text-slate-300 transition-all duration-300 ${
+          collapsed ? 'w-16' : 'w-60'
+        }`}
+      >
+        <div className="flex items-center border-b border-slate-800 px-3 py-4">
+          <button
+            onClick={() => setCollapsed((c) => !c)}
+            title={collapsed ? 'Perluas menu' : 'Ciutkan menu'}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d={collapsed ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7'}
+              />
+            </svg>
+          </button>
+          <div className={`ml-2 min-w-0 ${collapsed ? 'hidden' : 'flex'} items-center gap-2`}>
+            <span className="text-xl">🧾</span>
+            <div>
+              <p className="text-sm font-bold text-white">Payment Receipt</p>
+              <p className="text-xs text-slate-500">System</p>
+            </div>
           </div>
         </div>
         <nav className="flex-1 space-y-1 overflow-y-auto p-3">
@@ -101,31 +122,37 @@ export default function Layout() {
               key={item.to}
               to={item.to}
               end={item.to === '/'}
+              title={item.label}
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  collapsed ? 'justify-center' : ''
+                } ${
                   isActive ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800 hover:text-white'
                 }`
               }
             >
               {item.icon}
-              {item.label}
+              {!collapsed && item.label}
             </NavLink>
           ))}
         </nav>
         <div className="border-t border-slate-800 p-3">
           <button
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-slate-800 hover:text-white"
+            title="Keluar"
+            className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-slate-800 hover:text-white ${
+              collapsed ? 'justify-center px-2' : ''
+            }`}
           >
             <svg className={iconClass} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            Keluar
+            {!collapsed && 'Keluar'}
           </button>
         </div>
       </aside>
 
-      <main className="ml-60 flex-1 p-6">
+      <main className={`flex-1 p-6 transition-all duration-300 ${collapsed ? 'ml-16' : 'ml-60'}`}>
         <div className="mx-auto max-w-6xl">
           <Outlet />
         </div>
